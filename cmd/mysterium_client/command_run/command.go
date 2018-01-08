@@ -12,6 +12,7 @@ import (
 	"github.com/mysterium/node/server"
 	"github.com/mysterium/node/tequilapi"
 	"github.com/mysterium/node/tequilapi/endpoints"
+	"github.com/mysterium/node/cli"
 )
 
 func NewCommand(options CommandOptions) *CommandRun {
@@ -47,15 +48,23 @@ func NewCommandWith(
 
 	httpApiServer := tequilapi.NewServer(options.TequilaApiAddress, options.TequilaApiPort, router)
 
-	return &CommandRun{
+	cmd := &CommandRun{
 		connectionManager,
 		httpApiServer,
+		nil,
 	}
+
+	if options.InteractiveCli {
+		cmd.cli = cli.NewCliClient()
+	}
+
+	return cmd
 }
 
 type CommandRun struct {
 	connectionManager client_connection.Manager
 	httpApiServer     tequilapi.ApiServer
+	cli               *cli.Client
 }
 
 func (cmd *CommandRun) Run() error {
@@ -69,6 +78,11 @@ func (cmd *CommandRun) Run() error {
 	}
 
 	fmt.Printf("Api started on: %d\n", port)
+
+	if cmd.cli != nil {
+		cmd.cli.Run()
+	}
+
 	return nil
 }
 

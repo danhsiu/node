@@ -124,7 +124,7 @@ func validateRegistrationRequest(regReq identityRegistrationDto) (err error) {
 func validateCreationRequest(createReq *identityCreationDto) (errors *validation.FieldErrorMap) {
 	errors = validation.NewErrorMap()
 	if len(createReq.Password) == 0 {
-		errors.ForField("password").AddError("required", "Field is required")
+		//errors.ForField("password").AddError("required", "Field is required")
 	}
 	return
 }
